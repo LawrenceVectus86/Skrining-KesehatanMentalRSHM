@@ -10,7 +10,7 @@ const Bd = ({ v, l }) => <span className="bd" style={{ color: COL[l], borderColo
 
 function Login({ onOk }) {
   const [u, setU] = useState(''), [p, setP] = useState(''), [err, setErr] = useState('');
-  const go = (e) => { e.preventDefault(); login(u, p) ? onOk() : setErr('Username atau password salah'); };
+  const go = async (e) => { e.preventDefault(); (await login(u, p)) ? onOk() : setErr('Email atau password salah'); };
   return (
     <div className="login">
       <form onSubmit={go}>
@@ -29,15 +29,18 @@ export default function Admin() {
   const [st, setSt] = useState('Memuat…'), [hi, setHi] = useState(Infinity);
   const seen = useRef(null);
 
-  const load = () => {
-    if (!isAdmin()) { setOk(false); return; }
+    const load = async () => {
+    if (!(await isAdmin())) { setOk(false); return; }
     setOk(true);
-    const r = semua();
-    setHi(seen.current === null ? Infinity : seen.current); // baris lebih baru dari polling sebelumnya berkedip
-    seen.current = r[0] ? r[0].id : 0;
-    setRows(r);
-    setSt('Realtime · diperbarui ' + new Date().toLocaleTimeString('id-ID'));
+    try {
+      const r = await semua();
+      setHi(seen.current === null ? Infinity : seen.current);
+      seen.current = r[0] ? r[0].id : 0;
+      setRows(r);
+      setSt('Realtime · diperbarui ' + new Date().toLocaleTimeString('id-ID'));
+    } catch { setSt('Gagal memuat data'); }
   };
+
   useEffect(() => onUpdate(load), []);
 
   if (ok === null) return <div className="w">Memuat…</div>;
@@ -77,8 +80,10 @@ export default function Admin() {
     });
     d.save('hasil-dass42-' + tgl() + '.pdf');
   };
-  const keluar = () => { logout(); setOk(false); };
-  const hapus = () => { if (confirm('Hapus SEMUA data di browser ini? Unduh CSV dulu bila perlu.')) { hapusSemua(); load(); } };
+  const keluar = async () => { await logout(); setOk(false); };
+  const hapus = async () => {
+  if (confirm('Hapus SEMUA data di database? Unduh Excel dulu bila perlu.')) { await hapusSemua(); load(); }
+  };
 
   return (
     <div className="w">
@@ -89,7 +94,7 @@ export default function Admin() {
           <button onClick={xlsx}>Unduh Excel</button>
           <button onClick={pdf}>Unduh PDF</button>
           <button className="sec" onClick={hapus}>Hapus Semua</button>
-          <a className="b s" href="#/admin" onClick={keluar}>Keluar</a>
+          <button className="sec" onClick={keluar}>Keluar</button>
         </div>
       </div>
       <div className="stats">

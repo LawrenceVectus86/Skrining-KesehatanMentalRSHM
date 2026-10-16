@@ -84,12 +84,12 @@ export default function App() {
     if (!f.nama.trim()) { notif('Nama wajib diisi.', 'Data Belum Lengkap'); return; }
     if (!miss(0, 21)) go(2);
   };
-  const submit = () => {
-    if (miss(21, 42)) return;
-    setBusy(true);
-    try { setRes(simpan(f, ans)); window.scrollTo(0, 0); }
-    catch (e) { notif('Gagal menyimpan: ' + e.message, 'Terjadi Kesalahan'); setBusy(false); }
-  };
+const submit = async () => {
+  if (miss(21, 42)) return;
+  setBusy(true);
+  try { setRes(await simpan(f, ans)); window.scrollTo(0, 0); }
+  catch (e) { notif(e.message, 'Terjadi Kesalahan'); setBusy(false); }
+};
 
   const field = (k, label, ph, extra) => (
     <label className="f">{label}
