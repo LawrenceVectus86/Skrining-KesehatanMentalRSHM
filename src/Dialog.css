@@ -1,0 +1,26 @@
+.ov {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, .45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: ovIn .2s ease;
+}
+.dlg {
+  background: #fff; width: 100%; max-width: 360px;
+  border-radius: 18px; padding: 26px 22px 22px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+  animation: dlgIn .25s cubic-bezier(.2, .9, .3, 1.2);
+}
+.dlg .ic {
+  width: 52px; height: 52px; margin: 0 auto 12px;
+  border-radius: 50%; background: #fff3e6; color: #f97316;
+  font-size: 28px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.dlg h3 { margin: 0 0 8px; }
+.dlg p { margin: 0 0 18px; color: #555; line-height: 1.5; }
+.dlg button { width: 100%; }
+
+@keyframes ovIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes dlgIn { from { opacity: 0; transform: scale(.9) translateY(10px) } to { opacity: 1; transform: none } }
